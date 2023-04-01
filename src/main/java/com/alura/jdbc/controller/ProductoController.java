@@ -20,7 +20,7 @@ public class ProductoController {
 
 	public List<Map<String, String>> listar() throws SQLException {
 		// TODO
-		/*
+        /*
 		Connection con = DriverManager.getConnection(
 				"jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC",
 				"root",
@@ -39,13 +39,23 @@ public class ProductoController {
 
 			resultado.add(fila);
 		}
-
 		con.close();
-
 		return resultado;
 	}
 
-    public void guardar(Object producto) {
+    public void guardar(Map<String, String> producto) throws SQLException{
+		Connection con = new ConnectionFactory().recuperaConexion();
+		Statement statement = con.createStatement();
+		statement.execute("INSERT INTO producto (nombre, descripcion, cantidad) "
+				+ "VALUES ( '"+producto.get("nombre")+ "','"
+				+ producto.get("descripcion")+ "',"
+				+ producto.get("cantidad")+")", Statement.RETURN_GENERATED_KEYS);
+
+		ResultSet resultSet = statement.getGeneratedKeys();
+		while(resultSet.next()){
+			System.out.println(String.format("Fue insertado el producto ID %d", resultSet.getInt(1)));
+
+		}
 		// TODO
 	}
 
