@@ -184,11 +184,18 @@ public class ControlDeStockFrame extends JFrame {
 
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
-                    Integer id = (Integer) modelo.getValueAt(tabla.getSelectedRow(), 0);
+                    Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
                     String nombre = (String) modelo.getValueAt(tabla.getSelectedRow(), 1);
                     String descripcion = (String) modelo.getValueAt(tabla.getSelectedRow(), 2);
 
-                    this.productoController.modificar(nombre, descripcion, id);
+                    int cantidadActualizada;
+                    try{
+                        cantidadActualizada =this.productoController.modificar(nombre, descripcion, id);
+                    } catch (SQLException e){
+                        throw new RuntimeException(e);
+                    }
+                    JOptionPane.showMessageDialog(this, cantidadActualizada + " Item actualizado con éxito!");
+
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
@@ -236,9 +243,7 @@ public class ControlDeStockFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Los campos Nombre y Descripción son requeridos.");
             return;
         }
-
         Integer cantidadInt;
-
         try {
             cantidadInt = Integer.parseInt(textoCantidad.getText());
         } catch (NumberFormatException e) {
