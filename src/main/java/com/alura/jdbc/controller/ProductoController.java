@@ -14,17 +14,16 @@ public class ProductoController {
 		// TODO
 	}
 
-	public void eliminar(Integer id) {
-		// TODO
+	public int eliminar(Integer id) throws SQLException {
+		Connection con = new ConnectionFactory().recuperaConexion();
+		Statement statement = con.createStatement();
+		statement.execute("DELETE FROM producto WHERE id = "+ id);
+		return statement.getUpdateCount();
+
 	}
 
 	public List<Map<String, String>> listar() throws SQLException {
-		// TODO
-        /*
-		Connection con = DriverManager.getConnection(
-				"jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC",
-				"root",
-				"password");*/
+
 		Connection con = new ConnectionFactory().recuperaConexion();
 		Statement statement = con.createStatement();
 		statement.execute("SELECT id, nombre, descripcion, cantidad FROM producto");
