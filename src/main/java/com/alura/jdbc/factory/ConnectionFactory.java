@@ -17,8 +17,12 @@ public class ConnectionFactory {
 
         this.datasource = pooledDataSource;
     }
-    public Connection recuperaConexion() throws SQLException {
-        return this.datasource.getConnection();
+    public Connection recuperaConexion() {
+        try{
+            return this.datasource.getConnection();
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
         /*
                 DriverManager.getConnection(
                 "jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC",

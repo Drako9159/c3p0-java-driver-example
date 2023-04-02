@@ -188,13 +188,11 @@ public class ControlDeStockFrame extends JFrame {
                     Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
                     String nombre = (String) modelo.getValueAt(tabla.getSelectedRow(), 1);
                     String descripcion = (String) modelo.getValueAt(tabla.getSelectedRow(), 2);
+                    Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
 
-                    int cantidadActualizada;
-                    try{
-                        cantidadActualizada =this.productoController.modificar(nombre, descripcion, id);
-                    } catch (SQLException e){
-                        throw new RuntimeException(e);
-                    }
+
+                    int cantidadActualizada =  this.productoController.modificar(nombre, descripcion, cantidad, id);
+
                     JOptionPane.showMessageDialog(this, cantidadActualizada + " Item actualizado con éxito!");
 
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
@@ -209,12 +207,8 @@ public class ControlDeStockFrame extends JFrame {
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
                     Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
-                    int cantidadEliminada;
-                    try {
-                        cantidadEliminada = this.productoController.eliminar(id);
-                    } catch (SQLException e){
-                        throw new RuntimeException(e);
-                    }
+                    int cantidadEliminada = this.productoController.eliminar(id);
+
 
                     modelo.removeRow(tabla.getSelectedRow());
 
@@ -223,22 +217,12 @@ public class ControlDeStockFrame extends JFrame {
     }
 
     private void cargarTabla() {
-        try {
-            var productos = this.productoController.listar();
-            try {
-                // TODO
-                productos.forEach(producto -> modelo.addRow(new Object[] { producto.get("id"), producto.get("nombre"),
-                        producto.get("descripcion"), producto.get("cantidad") }));
-            } catch (Exception e) {
-                throw e;
-            }
-        } catch (SQLException e){
-            throw new RuntimeException(e);
-        }
-
-
+        var productos = this.productoController.listar();
+        productos.forEach(producto -> modelo.addRow(new Object[] { producto.getId(),
+                producto.getNombre(),
+                producto.getDescripcion(),
+                String.valueOf(producto.getCantidad()) }));
     }
-
     private void guardar() {
         if (textoNombre.getText().isBlank() || textoDescripcion.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Los campos Nombre y Descripción son requeridos.");
@@ -260,16 +244,11 @@ public class ControlDeStockFrame extends JFrame {
         producto.put( "descripcion", textoDescripcion.getText());
         producto.put( "cantidad", String.valueOf(cantidadInt));*/
         var producto = new Producto(textoNombre.getText(),textoDescripcion.getText(), cantidadInt);
-
         var categoria = comboCategoria.getSelectedItem();
-        try{
-            this.productoController.guardar(producto);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+        this.productoController.guardar(producto);
 
         JOptionPane.showMessageDialog(this, "Registrado con éxito!");
-
         this.limpiarFormulario();
     }
 

@@ -11,6 +11,12 @@ public class Producto {
         this.descripcion = descripcion;
         this.cantidad = cantidad;
     }
+    public Producto(Integer id, String nombre, String descripcion, Integer cantidad){
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.cantidad = cantidad;
+    }
 
     public String getNombre() {
         return nombre;
@@ -30,6 +36,9 @@ public class Producto {
 
     public Integer getCantidad() {
         return cantidad;
+    }
+    public Integer getId(){
+        return this.id;
     }
 
     public void setCantidad(Integer cantidad) {
