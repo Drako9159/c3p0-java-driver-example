@@ -8,12 +8,14 @@ import java.sql.SQLException;
 public class ConnectionFactory {
     private DataSource datasource;
     public ConnectionFactory (){
-        var poolDataSource = new ComboPooledDataSource();
-        poolDataSource.setJdbcUrl("jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC");
-        poolDataSource.setUser("root");
-        poolDataSource.setPassword("password");
+        var pooledDataSource = new ComboPooledDataSource();
+        pooledDataSource.setJdbcUrl("jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC");
+        pooledDataSource.setUser("root");
+        pooledDataSource.setPassword("password");
+        // Maximum connections
+        pooledDataSource.setMaxPoolSize(10);
 
-        this.datasource = poolDataSource;
+        this.datasource = pooledDataSource;
     }
     public Connection recuperaConexion() throws SQLException {
         return this.datasource.getConnection();
