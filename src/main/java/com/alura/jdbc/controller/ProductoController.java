@@ -2,6 +2,7 @@ package com.alura.jdbc.controller;
 
 import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.modelo.Producto;
+import com.alura.jdbc.dao.ProductoDAO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -57,48 +58,8 @@ public class ProductoController {
 	}
 
     public void guardar(Producto producto) throws SQLException {
-		/*
-		String nombre = producto.getNombre();
-		String descripcion = producto.getDescripcion();
-		Integer cantidad = producto.getCantidad();
-		Integer maximaCantidad = 50;
- 		*/
-		final Connection con = new ConnectionFactory().recuperaConexion();
-		try(con){
-			con.setAutoCommit(false);
-			final PreparedStatement statement = con.prepareStatement("INSERT INTO producto (nombre, descripcion, cantidad) "
-							+ "VALUES ( ?, ?, ? )",
-					Statement.RETURN_GENERATED_KEYS);
-			try(statement){
-				//do {
-					//int cantidadParaGuardar = Math.min(cantidad, maximaCantidad);
-					ejecutaRegistro(producto, statement);
-					//cantidad -= maximaCantidad;
-				//} while (cantidad > 0);
-					// commit fon confirmed process
-					con.commit();
-			} catch (Exception e){
-				// if error, resolve transaction
-				con.rollback();
-				System.out.println("ROLLBACK");
-			}
-		}
+		ProductoDAO productoDAO = new ProductoDAO(new ConnectionFactory().recuperaConexion());
+		productoDAO.guardar(producto);
 	}
-	public void ejecutaRegistro(Producto producto, PreparedStatement statement) throws SQLException {
-		/*if (Integer.valueOf(cantidad) < 50){
-			throw new RuntimeException("Ocurrió un error");
-		}*/
-		statement.setString(1, producto.getNombre());
-		statement.setString(2, producto.getDescripcion());
-		statement.setString(3, String.valueOf(producto.getCantidad()));
-		statement.execute();
 
-		final ResultSet resultSet = statement.getGeneratedKeys();
-		try (resultSet){
-			while (resultSet.next()) {
-				producto.setId(resultSet.getInt(1));
-				System.out.println(String.format("Fue insertado el producto ID %s", producto));
-			}
-		}
-	}
 }
