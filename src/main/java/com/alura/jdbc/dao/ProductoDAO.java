@@ -18,8 +18,8 @@ public class ProductoDAO {
        // final Connection con = new ConnectionFactory().recuperaConexion();
         try (con) {
             //con.setAutoCommit(false);
-            final PreparedStatement statement = con.prepareStatement("INSERT INTO producto (nombre, descripcion, cantidad) "
-                            + "VALUES ( ?, ?, ? )",
+            final PreparedStatement statement = con.prepareStatement("INSERT INTO producto (nombre, descripcion, cantidad, categoria_id) "
+                            + "VALUES ( ?, ?, ?, ? )",
                     Statement.RETURN_GENERATED_KEYS);
             try (statement) {
                 //do {
@@ -46,6 +46,7 @@ public class ProductoDAO {
         statement.setString(1, producto.getNombre());
         statement.setString(2, producto.getDescripcion());
         statement.setString(3, String.valueOf(producto.getCantidad()));
+        statement.setInt(4, producto.getCategoriaId());
         statement.execute();
 
         final ResultSet resultSet = statement.getGeneratedKeys();
